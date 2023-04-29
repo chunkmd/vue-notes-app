@@ -2,36 +2,50 @@
 import { ref } from "vue";
 
 const showModal = ref(false);
+const newNote = ref("");
+const notes = ref([]);
+
+function getRandomColor() {
+  return "hsl(" + Math.random() * 360 + ", 100%, 75%";
+}
+
+const addNote = () => {
+  notes.value.push({
+    id: Math.floor(Math.random() * 2375853324),
+    text: newNote.value,
+    date: new Date(),
+    backgroundColor: getRandomColor(),
+  });
+
+  showModal.value = false;
+  newNote.value = "";
+};
 </script>
 
 <template>
   <main>
     <div v-if="showModal" class="overlay">
       <div class="modal">
-        <textarea name="note" id="note" cols="30" rows="10"></textarea>
-        <button>Add Note</button>
-        <button class="close" @click="showModal=false">Close</button>
+        <textarea
+          v-model="newNote"
+          name="note"
+          id="note"
+          cols="30"
+          rows="10"
+        ></textarea>
+        <button @click="addNote">Add Note</button>
+        <button class="close" @click="showModal = false">Close</button>
       </div>
     </div>
     <div class="container">
       <header>
         <h1>Notes</h1>
-        <button @click="showModal=true">+</button>
+        <button @click="showModal = true">+</button>
       </header>
       <div class="cards-container">
-        <div class="card">
-          <p class="main-text">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente
-            quasi corporis amet perspiciatis, libero est!
-          </p>
-          <p class="date">04/27/6853</p>
-        </div>
-        <div class="card">
-          <p class="main-text">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente
-            quasi corporis amet perspiciatis, libero est!
-          </p>
-          <p class="date">04/27/6853</p>
+        <div v-for="note in notes" class="card" :style="{backgroundColor: note.backgroundColor}">
+          <p class="main-text">{{ note.text }}</p>
+          <p class="date">{{ note.date.toLocaleDateString("ro-MD") }}</p>
         </div>
       </div>
     </div>
@@ -87,7 +101,7 @@ header button {
   justify-content: space-between;
   margin-right: 20px;
   margin-bottom: 20px;
-  color: aliceblue;
+  color:rgb(21, 20, 20);
 }
 
 .date {
@@ -109,6 +123,7 @@ header button {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: black;
 }
 
 .modal {
