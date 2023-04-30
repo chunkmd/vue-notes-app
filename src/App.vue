@@ -3,22 +3,52 @@ import { ref } from "vue";
 
 const showModal = ref(false);
 const newNote = ref("");
+const errorMessage = ref("");
 const notes = ref([]);
+
+const data = JSON.parse(localStorage.getItem("notes"));
+if (data) {
+  notes.value = data;
+}
 
 function getRandomColor() {
   return "hsl(" + Math.random() * 360 + ", 100%, 75%";
 }
 
 const addNote = () => {
+  if (newNote.value.length < 2) {
+    return (errorMessage.value = "Note needs to be 10 characters or more");
+  }
+
+  if (newNote.value.length > 170) {
+    return (errorMessage.value = "Note needs to be less than 170 characters");
+  }
+
+  const today = new Date();
+  const date = today.toLocaleDateString("ro-MD");
+
   notes.value.push({
     id: Math.floor(Math.random() * 2375853324),
     text: newNote.value,
-    date: new Date(),
+    date: date,
     backgroundColor: getRandomColor(),
   });
 
+  localStorage.setItem("notes", JSON.stringify(notes.value));
+
   showModal.value = false;
   newNote.value = "";
+  errorMessage.value = "";
+};
+
+const removeNote = (noteId) => {
+  const newNotes = notes.value.filter((note) => {
+    return note.id !== noteId;
+  });
+
+  notes.value = newNotes;
+
+  localStorage.setItem("notes", JSON.stringify(notes.value));
 };
 </script>
 
@@ -27,12 +57,13 @@ const addNote = () => {
     <div v-if="showModal" class="overlay">
       <div class="modal">
         <textarea
-          v-model="newNote"
+          v-model.trim="newNote"
           name="note"
           id="note"
           cols="30"
           rows="10"
         ></textarea>
+        <p v-if="errorMessage">{{ errorMessage }}</p>
         <button @click="addNote">Add Note</button>
         <button class="close" @click="showModal = false">Close</button>
       </div>
@@ -43,9 +74,21 @@ const addNote = () => {
         <button @click="showModal = true">+</button>
       </header>
       <div class="cards-container">
-        <div v-for="note in notes" class="card" :style="{backgroundColor: note.backgroundColor}">
-          <p class="main-text">{{ note.text }}</p>
-          <p class="date">{{ note.date.toLocaleDateString("ro-MD") }}</p>
+        <div
+          v-for="note in notes"
+          :key="note.id"
+          class="card"
+          :style="{ backgroundColor: note.backgroundColor }"
+        >
+          <div class="noteText">
+            <p class="main-text">{{ note.text }}</p>
+          </div>
+          <div class="noteFooter">
+            <p class="date" >
+              {{ note.date }}
+            </p>
+            <button @click="removeNote(note.id)">X</button>
+          </div>
         </div>
       </div>
     </div>
@@ -101,7 +144,7 @@ header button {
   justify-content: space-between;
   margin-right: 20px;
   margin-bottom: 20px;
-  color:rgb(21, 20, 20);
+  color: rgb(21, 20, 20);
 }
 
 .date {
@@ -150,5 +193,28 @@ header button {
 .modal .close {
   background-color: rgb(193, 15, 15);
   margin-top: 7px;
+}
+
+.modal p {
+  color: rgb(193, 15, 15);
+}
+
+.noteFooter {
+  display: flex;
+  flex-direction: row;
+  display: flex;
+  align-items: space-between;
+}
+
+.noteFooter button {
+  margin-left: auto;
+  border: none;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  background-color: rgb(21, 20, 20);
+  border-radius: 100%;
+  color: white;
+  font-size: auto;
 }
 </style>
