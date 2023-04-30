@@ -303,6 +303,7 @@ header button {
     transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
+    
   }
 }
 </style>
