@@ -7,6 +7,7 @@ const errorMessage = ref("");
 const notes = ref([]);
 
 const data = JSON.parse(localStorage.getItem("notes"));
+const padding = 20; // Add this line
 if (data) {
   notes.value = data;
 }
@@ -84,7 +85,7 @@ const removeNote = (noteId) => {
             <p class="main-text">{{ note.text }}</p>
           </div>
           <div class="noteFooter">
-            <p class="date" >
+            <p class="date">
               {{ note.date }}
             </p>
             <button @click="removeNote(note.id)">X</button>
@@ -97,7 +98,8 @@ const removeNote = (noteId) => {
 
 <style scoped>
 main {
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   width: 100vw;
   background-color: rgb(255, 255, 255);
 }
@@ -135,7 +137,7 @@ header button {
 
 .card {
   width: 225px;
-  height: 225px;
+  height: auto;
   background-color: rgb(237, 182, 44);
   padding: 10px;
   border-radius: 15px;
@@ -146,6 +148,8 @@ header button {
   margin-bottom: 20px;
   color: rgb(21, 20, 20);
 }
+
+/* Media query for screens smaller than 600px */
 
 .date {
   font-size: 12.5px;
@@ -216,5 +220,89 @@ header button {
   border-radius: 100%;
   color: white;
   font-size: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  main {
+    height: auto;
+    width: 100vw;
+    background-color: rgb(255, 255, 255);
+    overflow: scroll;
+  }
+
+  .body {
+    height: auto;
+    padding-bottom: 10%;
+  }
+
+  .container {
+    padding-left: 10%;
+    max-width: 600px;
+    padding: 10px;
+    margin: 0 auto;
+    margin-left: 5%;
+    margin-bottom: 10%;
+  }
+
+  .card {
+    width: 100%;
+    height: auto;
+    min-height: 80%;
+    background-color: rgb(237, 182, 44);
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: rgb(21, 20, 20);
+
+  }
+
+  header button {
+    border: none;
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    background-color: rgb(21, 20, 20);
+    border-radius: 100%;
+    color: white;
+    font-size: 20px;
+    margin-right: 6%;
+  }
+  h1 {
+    font-weight: bold;
+    margin-bottom: 25px;
+    font-size: 40px;
+    color: black;
+  }
+
+  .overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    background-color: rgba(255, 232, 232, 0.77);
+    z-index: 10;
+    display: flex;
+    align-items: top;
+    justify-content: top;
+    color: black;
+  }
+
+  .modal {
+    width: 750px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+
+    position: relative;
+    top: 22%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+  }
 }
 </style>
